@@ -1,0 +1,41 @@
+Config Controller is a hosted service to provision and orchestrate Anthos and Google Cloud resources. 
+Config Controller leverages Config Connector, which maps resources using the Kubernetes Resource Model (KRM) to 
+their Google Cloud counterparts by making the necessary Google Cloud API calls. It also includes Config Sync 
+
+There are 2 ways to manage GCP resources from GKE -
+1 : Config Controller (Part of ACM :: Has Config Connector, Config Sync components) https://cloud.google.com/anthos-config-management/docs/how-to/config-controller-setup
+2 : Config Connector (Part of GKE :: Has Config Connector) https://cloud.google.com/config-connector/docs/how-to/install-upgrade-uninstall#cloud-console
+Both are dependent on Workload Identity Pool to be enabled - https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#config-connector
+
+Other non-gke ways are -
+Commandline tools & Deployment manager
+
+Way 1->
+1 : Setup GCP source repository -
+  1.1 : Create Cloud Source Repository (works only with GCP cloud source repository)
+  https://source.developers.google.com/p/gebu-demo-projects/r/acm-config-control-repo1
+  1.2 : Put GCP resource provisioning yamls in policy directory.
+  provision_repo.yaml
+
+2: Setup Config Controller/ connector gke instance
+  2.1 : Install Config Controller Instance
+  gcloud alpha anthos config controller create CONFIG_CONTROLLER_NAME --location=us-central1
+  2.2 : create service account, which will create GCP resources -
+  kubectl apply -f gitops-iam.yaml
+  2.3 : create config-management file and configure cloud source repository 
+  kubectl apply -f config-management.yaml
+
+3 : Testing
+  nomos status --contexts $(kubectl config current-context)
+  kubectl logs -n config-management-system -l app=git-importer -c git-sync
+
+https://cloud.google.com/config-connector/docs/reference/overview
+Few examples -
+Google Cloud Resource	    Config Connector Resource Name
+-------------------------------------------------------
+BigQuery	                  BigQueryTable
+Cloud Bigtable	            BigtableTable
+Binary Authorization	      BinaryAuthorizationPolicy
+Compute Engine	            ComputeInstance
+Cloud SQL	                  SQLDatabase
+Cloud Source Repositories	  SourceRepoRepository

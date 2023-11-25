@@ -1,0 +1,15 @@
+  
+# constraint-container-limits.yaml
+
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerLimits
+metadata:
+  name: constraint-container-limits
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["*"]
+  parameters:
+    cpu: "50m"
+    memory: "64Mi"

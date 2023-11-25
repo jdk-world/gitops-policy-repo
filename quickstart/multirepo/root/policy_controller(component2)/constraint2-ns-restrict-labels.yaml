@@ -1,0 +1,13 @@
+# K8sRestrictLabels restriction policy
+
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRestrictLabels
+metadata:
+  name: ns-must-not-have-label-test-name
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["*"]
+  parameters:
+    restrictedLabels: ["test","name"]
