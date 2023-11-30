@@ -12,3 +12,4 @@ spec:
   targetCPUUtilizationPercentage: 5
 
 #increase the load
+#kubectl get hpa it-patch-management-hpa --watch
